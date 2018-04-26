@@ -3,7 +3,8 @@ module Main where
 import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
-import Data.List (List(..), filter, head)
+import Data.Foldable (foldl)
+import Data.List (List)
 import Math (pi)
 
 circleArea :: Number -> Number
@@ -26,7 +27,17 @@ type Address =
 
 type AddressBook = List Entry
 
+showEntry :: Entry -> String
+showEntry {firstName, lastName, address} =
+  firstName <> " " <> lastName <> ", " <> showAddress address
 
+showAddress :: Address -> String
+showAddress {street, city, state} =
+  street <> ", " <> city <> " " <> state
+
+showAddressBook :: AddressBook -> String
+showAddressBook addressees =
+  foldl (\x y -> x <> y) "" (map showEntry addressees)
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
