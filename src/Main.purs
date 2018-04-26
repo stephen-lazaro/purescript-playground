@@ -4,7 +4,7 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.Foldable (foldl)
-import Data.List (List)
+import Data.List (List(..))
 import Math (pi)
 
 circleArea :: Number -> Number
@@ -38,6 +38,9 @@ showAddress {street, city, state} =
 showAddressBook :: AddressBook -> String
 showAddressBook addressees =
   foldl (\x y -> x <> y) "" (map showEntry addressees)
+
+prependEntry:: Entry -> AddressBook -> AddressBook
+prependEntry = Cons
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
