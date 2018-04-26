@@ -4,8 +4,9 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.Foldable (foldl)
-import Data.List (List(..), head)
+import Data.List (List(..), head, nubBy)
 import Data.Maybe (Maybe)
+import Data.Tuple (Tuple(..))
 import Math (pi)
 
 circleArea :: Number -> Number
@@ -77,6 +78,23 @@ findByAddress address = head <<< filter findAddress
       entry.address.street == address.street &&
         entry.address.city == address.city &&
         entry.address.state == address.state
+
+-- Really want cartesian product
+removeDuplicates :: AddressBook -> AddressBook
+removeDuplicates = nubBy eqEntry <<< cartesianSquare
+  where
+    eqEntry :: ({entryA :: Entry, entryB :: Entry}) -> Boolean
+    eqEntry {entryA, entryB} = 
+      entryA.firstName == entryB.firstName &&
+        entryA.lastName == entryB.lastName &&
+        entryA.address.street == entryB.address.street &&
+        entryA.address.city == entryB.address.city &&
+        entryA.address.state == entryB.address.state
+    cartesianSquare :: AddressBook -> List {entryA :: Entry, entryB ::Entry}
+    cartesianSquare list =
+      foldl
+        (\lz ly -> lz <> ly)
+        (map (\x -> map (\y -> {entryA: x, entryB: y}) list) list)
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
