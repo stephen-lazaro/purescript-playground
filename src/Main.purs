@@ -42,6 +42,14 @@ showAddressBook addressees =
 prependEntry:: Entry -> AddressBook -> AddressBook
 prependEntry = Cons
 
+filter :: (Entry -> Boolean) -> AddressBook -> AddressBook
+filter f Nil = Nil
+filter f (Cons hd rst) = case (f hd) of
+  true -> Cons hd (filter f rst)
+  false -> filter f rst
+
+
+
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
   log "Hello sailor!"
